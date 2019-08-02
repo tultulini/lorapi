@@ -1,0 +1,12 @@
+[
+    {
+        "resourceName": "alpha",
+        "identifier": "id",
+        "idGenTypes": "numeric"
+    },
+    {
+        "resourceName": "beta",
+        "identifier": "id",
+        "idGenTypes": "uuid"
+    }
+]

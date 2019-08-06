@@ -8,13 +8,17 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dynamicRouter = require('./routes/dynamic')
 var app = express();
-import {getResourceNames} from './resources'
+import { getResourceNames, getConfigurations } from './resources'
 var resourceNames = getResourceNames()
-
+var configurations = getConfigurations()
+for (let idx in configurations) {
+  console.log(`newID=${configurations[idx].generateId(null, null)}`)
+}
+console.log(JSON.stringify(configurations, null, '\t'))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 
 

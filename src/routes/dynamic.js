@@ -1,6 +1,6 @@
 var express = require('express');
 
-module.exports = { getRoute: function (name) { return getRoute(name) } };
+module.exports = { getRoute: function (config, adapter) { return getRoute(config, adapter) } };
 
 
 function getRoute(config, adapter) {
@@ -23,7 +23,10 @@ function getRoute(config, adapter) {
     });
 
     router.post('/', function (req, res) {
-        let item = JSON.parse(req.body)
+        console.log('entered post')
+        console.log(`req.body: ${req.body}`)
+        let item = req.body
+        console.log(`gonna post ${JSON.stringify(item)}`)
         if (!item) {
             res.status(500).send("missing item to update")
             return

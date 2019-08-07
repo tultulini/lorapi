@@ -8,12 +8,11 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dynamicRouter = require('./routes/dynamic')
 var app = express();
-import { getResourceNames, getConfigurations } from './resources'
-var resourceNames = getResourceNames()
-var configurations = getConfigurations()
-for (let idx in configurations) {
-  console.log(`newID=${configurations[idx].generateId(null, null)}`)
-}
+import {  getConfigurations } from './resources'
+import { getAdapter } from './lib/file-adapter';
+
+
+
 console.log(JSON.stringify(configurations, null, '\t'))
 
 // view engine setup
@@ -31,8 +30,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-for (var idx in resourceNames) {
-  var resourceName = resourceNames[idx]
+const configurations = getConfigurations()
+const adapter = getAdapter()
+
+for (var idx in configurations) {
+  const config = configurations[idx]
+  var resourceName = config.resourceName
   console.log(`gonna add resource ${resourceName}`)
   app.use('/' + resourceName, dynamicRouter.getRoute(resourceName))
 }

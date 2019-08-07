@@ -2,9 +2,6 @@ import { readFileSync, readdirSync } from 'fs'
 import { isNullOrEmpty } from './lib/collections-utils';
 import { v4 } from 'uuid'
 const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid" }
-export function getResourceNames() {
-    return ['alpha', 'beta']
-}
 
 export function getConfigurations() {
 
@@ -25,9 +22,10 @@ function getNewNumericId(items, identifierField) {
     if (isNullOrEmpty(items)) {
         return 1
     }
-    var max = items.reduce(function (a, b) {
-        return Math.max(a[identifierField], b[identifierField]);
-    });
+    const max = items.reduce(function(prev, current) {
+        return (prev[identifierField] > current[identifierField]) ? prev : current
+    })[identifierField] + 1
+    return max
 }
 function getUUIDId(items, identifierField) {
     return v4()

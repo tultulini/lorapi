@@ -24,7 +24,7 @@ function getRoute(config, adapter) {
 
     router.post('/', function (req, res) {
         console.log('entered post')
-        console.log(`req.body: ${req.body}`)
+
         let item = req.body
         console.log(`gonna post ${JSON.stringify(item)}`)
         if (!item) {
@@ -32,27 +32,42 @@ function getRoute(config, adapter) {
             return
         }
 
-        let addedItem = adapter.add(item)
+        let addedItem = adapter.add(config, item)
         res.send(addedItem)
     })
 
 
     router.put('/:id', function (req, res) {
-        let item = JSON.parse(req.body)
-        if (!item) {
-            res.status(500).send("missing item to update")
-            return
+        try {
+            let item = req.body
+            console.log(`item: ${JSON.stringify(item, null, '\t')} id:${req.params.id}`)
+            if (!item) {
+                res.status(500).send("missing item to update")
+                return
+            }
+
+            let existingItem = adapter.getById(config, req.params.id)
+            if (!existingItem) {
+                res.status(404).send("couldn't find resource")
+                return
+            }
+
+            item[config.identifier] = req.params.id
+            adapter.update(config, item, req.params.id)
+            res.send(req.params.id)
+        }
+        catch (error) {
+            res.status(500).send(error)
+
+            console.error(error, error.stack)
         }
 
-        let existingItem = adapter.getById(config, req.params.id)
-        if (!existingItem) {
-            res.status(404).send("couldn't find resource")
-            return
-        }
+    })
+    router.delete('/:id', (req, res) => {
+        console.log('enter delete')
+        adapter.delete(config, req.params.id)
+        res.send()
 
-        item[config.identifier] = req.params.id
-        adapter.update(config, item)
-        res.send(id)
     })
     return router
 }

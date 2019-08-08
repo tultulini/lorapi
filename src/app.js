@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dynamicRouter = require('./routes/dynamic')
 var app = express();
-import {  getConfigurations } from './resources'
+import { getConfigurations } from './resources'
 import { getAdapter } from './lib/file-adapter';
 
 
@@ -37,7 +37,7 @@ for (var idx in configurations) {
   const config = configurations[idx]
   var resourceName = config.resourceName
   console.log(`gonna add resource ${resourceName}`)
-  app.use('/' + resourceName, dynamicRouter.getRoute(resourceName))
+  app.use('/' + resourceName, dynamicRouter.getRoute(config, adapter))
 }
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,27 +1,32 @@
 import { isNullOrEmpty } from './collections-utils';
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync } from 'fs'
 
 export function getAdapter() {
     return {
         getById,
         getAll,
         add,
-        update
+        update,
+        delete: deleteItem
 
     }
 }
 function getById(config, id) {
+    console.log('getById entered')
     const items = getAll(config)
-    if (isNullOrEmpty(items))
+    if (isNullOrEmpty(items)) {
+        console.error('found no item by ID')
         return null
+    }
     const item = items.find(i => i[config.identifier] == id)
     return item
 }
 
 function getAll(config) {
-    console.log('enter getAll')
+    console.log(`enter getAll for: ${JSON.stringify(config, null, '\t')}`)
     var filePath = getFilePath(config)
-    if (!fileExist(filePath)) {
+    if (!existsSync(filePath)) {
+        console.log(`${filePath} doesn't exists`)
         return null
     }
     const buffer = readFileSync(filePath)
@@ -33,7 +38,11 @@ function getAll(config) {
 function add(config, item) {
     console.log('enter add')
     let items = getAll(config)
-    item[config.identifier] = config.generateId()
+    if (!items) {
+
+        items = []
+    }
+    item[config.identifier] = config.generateId(items, config['identifier'])
     items.push(item)
     writeItems(config, items)
 
@@ -45,6 +54,20 @@ function writeItems(config, items) {
         { encoding: 'utf8', flag: 'w' })
 }
 
+function deleteItem(config, id) {
+    let items = getAll(config)
+    if (isNullOrEmpty(items)) {
+        return 0
+    }
+    let existingItemIndex = items.findIndex(i => i[config.identifier] == id)
+    if (existingItemIndex < 0) {
+        return 0
+    }
+    items.splice(existingItemIndex, 1)
+    writeItems(config, items)
+
+}
+
 function update(config, item, id) {
     let items = getAll(config)
     let existingItemIndex = items.findIndex(i => i[config.identifier] == id);
@@ -53,20 +76,11 @@ function update(config, item, id) {
         items.splice(existingItemIndex, 1, item)
     }
     writeItems(config, items)
+    return true
 }
 function getFilePath(config) {
-    return './' + config.resourceName + '.json'
+    const filePath = './' + config.resourceName + '.json'
+    console.log(`filePath: ${filePath}`)
+    return filePath
 
-}
-function fileExist(filePath) {
-    return new Promise((resolve, reject) => {
-        fs.access(filePath, fs.F_OK, (err) => {
-            if (err) {
-                console.error(err)
-                return reject(err);
-            }
-            //file exists
-            resolve();
-        })
-    });
 }

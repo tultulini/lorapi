@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "server": "babel-node ./src/bin/www",
+    "start": "nodemon ./bin/www",
+    "server": "nodemon  --exec babel-node ./src/bin/www",
     "dev": "NODE_ENV=development npm-run-all server"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
-    "@babel/preset-env": "^7.5.5"
+    "@babel/preset-env": "^7.5.5",
+    "nodemon": "^1.19.1"
   }
 }

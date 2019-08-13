@@ -1,17 +1,2 @@
 [
-	{
-		"resourceName": "alpha",
-		"identifier": "id",
-		"idGenType": "numeric"
-	},
-	{
-		"resourceName": "beta",
-		"identifier": "id",
-		"idGenType": "uuid"
-	},
-	{
-		"resourceName": "gamma",
-		"identifier": "id",
-		"idGenType": "uuid"
-	}
 ]

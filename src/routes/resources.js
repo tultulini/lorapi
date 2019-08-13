@@ -32,7 +32,7 @@ export function getResourcesRouter(addedRouteCallback) {
         }
         try {
             setConfiguration(resource)
-            res.send({"message":`${resource.resourceName} added successfully - please reboot service to use new resource`});
+            res.send({"message":`${resource.resourceName} added successfully - noemon should reboot service`});
             if(addedRouteCallback!==undefined)
             {
                 addedRouteCallback(getConfiguration(resource))

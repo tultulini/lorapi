@@ -9,7 +9,7 @@ run service by running:
 > npm run dev
 
 Assuming the service is running on http://localhost:3000
-Post a request (using an app like Insomnia or Postman) to http://localhost:3000/resources
+Send a **POST** request (using an app like Insomnia or Postman) to http://localhost:3000/resources
 with a body like:
 ```
 {
@@ -18,6 +18,9 @@ with a body like:
 	"idGenType": "uuid"
 }
 ```
-  
-  - **identifier** is the name of the field 
+
+  - **identifier** is the name of the field
   - **idGenType** can be either uuid or numeric
+
+### listing available resources
+Send a **GET** request to http://localhost:3000/resources

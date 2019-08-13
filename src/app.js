@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
 var dynamicRouter = require('./routes/dynamic')
 
 var app = express();
@@ -17,7 +17,6 @@ const adapter = getAdapter()
 
 
 
-console.log(JSON.stringify(configurations, null, '\t'))
 
 
 // view engine setup
@@ -33,17 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/resources', getResourcesRouter());
-const configurations = getConfigurations()
-
-for (var idx in configurations) {
-  const config = configurations[idx]
-  var resourceName = config.resourceName
-  console.log(`gonna add resource ${resourceName}`)
-  app.use('/' + resourceName, dynamicRouter.getRoute(config, adapter))
-}
+setupRouting();
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -59,5 +48,21 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+function setupRouting() {
+  app.use('/', indexRouter);
+  app.use('/resources', getResourcesRouter());
+  const configurations = getConfigurations();
+console.log(JSON.stringify(configurations, null, '\t'))
+
+  for (var idx in configurations) {
+    const config = configurations[idx];
+    var resourceName = config.resourceName;
+    console.log(`gonna add resource ${resourceName}`);
+    app.use('/' + resourceName, dynamicRouter.getRoute(config, adapter));
+  }
+
+}
 
 module.exports = app;

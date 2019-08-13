@@ -1,0 +1,37 @@
+<Body><h1 id="lorapi">LoRAPI</h1>
+
+<h2 id="lowresistanceapi">Low Resistance API</h2>
+
+<p>This is an express project that offers basic RESTful to GET, PUT, POST and DELETE data.
+resources routing are loaded dynamically.
+Persistence is done by using fs having file per resource collection</p>
+
+<h3 id="addinganewresource">adding a new resource</h3>
+
+<p>run service by running:</p>
+
+<blockquote>
+  <p>npm run dev</p>
+</blockquote>
+
+<p>Assuming the service is running on http://localhost:3000
+Send a <strong>POST</strong> request (using an app like Insomnia or Postman) to http://localhost:3000/resources
+with a body like:</p>
+
+<pre><code>{
+    "resourceName": "theResourceName",
+    "identifier": "id",
+    "idGenType": "uuid"
+}
+</code></pre>
+
+<ul>
+<li><strong>identifier</strong> is the name of the field</li>
+
+<li><strong>idGenType</strong> can be either uuid or numeric</li>
+</ul>
+
+<h3 id="listingavailableresources">listing available resources</h3>
+
+<p>Send a <strong>GET</strong> request to http://localhost:3000/resources</p>
+</Body>

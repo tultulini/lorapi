@@ -22,5 +22,7 @@ with a body like:
   - **identifier** is the name of the field
   - **idGenType** can be either uuid or numeric
 
-### listing available resources
+### Listing available resources
 Send a **GET** request to http://localhost:3000/resources
+
+### Readme can be viewed in http://localhost:3000

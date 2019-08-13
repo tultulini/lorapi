@@ -11,11 +11,13 @@ run service by running:
 Assuming the service is running on http://localhost:3000
 Post a request (using an app like Insomnia or Postman) to http://localhost:3000/resources
 with a body like:
-	{
-		"resourceName": "theResourceName",
-		"identifier": "id",
-		"idGenType": "uuid"
-  }
+```
+{
+	"resourceName": "theResourceName",
+	"identifier": "id",
+	"idGenType": "uuid"
+}
+```
   
   - **identifier** is the name of the field 
   - **idGenType** can be either uuid or numeric

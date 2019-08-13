@@ -1,35 +1,34 @@
-doctype html
-html(lang="en")
-  head
-    title LoRAPI
-  body
-    h1#lorapi LoRAPI
-    h2#lowresistanceapi Low Resistance API
-    p
-      | This is an express project that offers basic RESTful to GET, PUT, POST and DELETE data.
-      | resources routing are loaded dynamically.
-      | Persistence is done by using fs having file per resource collection
-    h3#addinganewresource adding a new resource
-    p run service by running:
-    blockquote
-      p npm run dev
-    p
-      | Assuming the service is running on http://localhost:3000
-      | Send a
-      strong POST
-      |  request (using an app like Insomnia or Postman) to http://localhost:3000/resources
-      | with a body like:
-    pre.
+h1#lorapi LoRAPI
+h2#lowresistanceapi Low Resistance API
+p This is an express project that offers basic RESTful to GET, PUT, POST and DELETE data. resources routing are loaded dynamically. Persistence is done by using fs having file per resource collection
+h3#addinganewresource adding a new resource
+p run service by running:
+blockquote
+  p npm run dev
+p
+  | Assuming the service is running on http://localhost:3000 Send a
+  |
+  strong POST
+  |  request (using an app like Insomnia or Postman) to http://localhost:3000/resources with a body like:
+pre
+  code.
+    {
+        "resourceName": "theResourceName",
+        "identifier": "id",
+        "idGenType": "uuid"
+    }
 
-    ul
-      li
-        strong identifier
-        |  is the name of the field
-      li
-        strong idGenType
-        |  can be either uuid or numeric
-    h3#listingavailableresources listing available resources
-    p
-      | Send a
-      strong GET
-      |  request to http://localhost:3000/resources
+ul
+  li
+    strong identifier
+    |  is the name of the field
+  li
+    strong idGenType
+    |  can be either uuid or numeric
+h3#listingavailableresources Listing available resources
+p
+  | Send a
+  |
+  strong GET
+  |  request to http://localhost:3000/resources
+h3#readmecanbeviewedinhttplocalhost3000 Readme can be viewed in http://localhost:3000

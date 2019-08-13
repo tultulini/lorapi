@@ -7,6 +7,7 @@ Persistence is done by using fs having file per resource collection
 ### adding a new resource
 run service by running:
 > npm run dev
+
 Assuming the service is running on http://localhost:3000
 Post a request (using an app like Insomnia or Postman) to http://localhost:3000/resources
 with a body like:

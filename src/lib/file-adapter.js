@@ -79,7 +79,7 @@ function update(config, item, id) {
     return true
 }
 function getFilePath(config) {
-    const filePath = './' + config.resourceName + '.json'
+    const filePath = './resource-data/' + config.resourceName + '.json'
     console.log(`filePath: ${filePath}`)
     return filePath
 

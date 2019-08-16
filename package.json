@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "server": "nodemon  --exec babel-node ./src/bin/www",
+    "server": "nodemon  --ignore resource-data/ --exec babel-node ./src/bin/www",
     "dev": "NODE_ENV=development npm-run-all server"
   },
   "dependencies": {

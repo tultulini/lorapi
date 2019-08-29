@@ -1,2 +1,31 @@
 [
+	{
+		"resourceName": "currency",
+		"identifier": "id",
+		"idGenType": "uuid",
+		"asserts": [
+			{
+				"type": "schema",
+				"methods": [
+					"post",
+					"put"
+				],
+				"schemna": {
+					"type": "object",
+					"properties": {
+						"currency": {
+							"type": "string"
+						},
+						"amount": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"currency",
+						"amount"
+					]
+				}
+			}
+		]
+	}
 ]

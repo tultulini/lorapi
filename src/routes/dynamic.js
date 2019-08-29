@@ -1,3 +1,5 @@
+import { HttpErrorCodes } from '../lib/http-utils';
+
 var express = require('express');
 
 //module.exports = { getRoute: function (config, adapter) { return getRoute(config, adapter) } };
@@ -31,12 +33,21 @@ export function getRoute(config, adapter) {
         let item = req.body
         console.log(`gonna post ${JSON.stringify(item)}`)
         if (!item) {
-            res.status(500).send("missing item to update")
+            res.status(400).send("missing item to update")
+            return
+        }
+        if (!assertRequest(config, item, res)) {
             return
         }
 
-        let addedItem = adapter.add(config, item)
-        res.send(addedItem)
+        try {
+            let addedItem = adapter.add(config, item)
+            res.send(addedItem)
+        }
+        catch (error) {
+            console.error(error)
+            res.status(HttpErrorCodes.InternalServerError).send(`error occured: ${error}`)
+        }
     })
 
 
@@ -45,7 +56,11 @@ export function getRoute(config, adapter) {
             let item = req.body
             console.log(`entered put for item: ${JSON.stringify(item, null, '\t')} id:${req.params.id}`)
             if (!item) {
-                res.status(500).send("missing item to update")
+                res.status(HttpErrorCodes.BadRequest).send("missing item to update")
+                return
+            }
+
+            if (!assertRequest(config, item, res)) {
                 return
             }
 
@@ -73,4 +88,17 @@ export function getRoute(config, adapter) {
 
     })
     return router
+}
+
+function assertRequest(config, data, res) {
+    try {
+        config.assert(data)
+        return true
+    }
+    catch (error) {
+        console.error(error)
+        res.status(HttpErrorCodes.BadRequest).send(`error occured: ${error}`)
+        return false
+    }
+
 }

@@ -5,7 +5,8 @@ import { Validator } from 'jsonschema'
 import { isNullOrWhiteSpace, stringContains } from './lib/string-utils';
 const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid" }
 const AssertTypes = { Schema: "schema", Field: "field" }
-const HttpMethods = { Get: "get", Put: "put", Post: "post", Delete: "delete", Patch: "patch" }
+
+export const HttpMethods = { Get: "get", Put: "put", Post: "post", Delete: "delete", Patch: "patch" }
 export function getConfigurations() {
 
     const fileData = getConfigurationData()
@@ -60,29 +61,54 @@ function getAsserts(assertsData) {
     let idx
     for (idx in assertsData) {
         let assertData = assertsData[idx]
+
+        const methodHandlers = handleMethodHandlers(assertData)
+
         let assert;
         switch (assertData.type) {
             case AssertTypes.Schema:
                 assert = getSchemaAssert(assertData)
                 break;
-            // case FailureTypes.Field:
-            //     failure = getFieldFailure(assertData)
-            //     break;
             default:
                 throw new Error(`${assertData.type} is not supported`)
         }
+
+        assert = Object.assign({}, assert, methodHandlers)
+
         asserts.push(assert)
     }
     return asserts
 }
 
-function getSchemaAssert(assertData) {
-    const methods = assertData.methods.toLowerCase().trim()
-    if (validateNethods(methods)) {
-        throw new Error("missing [for] property")
+function handleMethodHandlers(assertData) {
+
+    if ((isNullOrEmpty(assertData.methods))) {
+        const message = `${JSON.stringify(assertData)} missing [methods] property - skipping assert`
+        throw new Error(message)
     }
 
+    const methods = assertData.methods.map(m => m.toLowerCase())
+    if (!validateMethods(methods)) {
+        const message = "validation failed for methods property"
+        throw new Error(message)
+    }
+    return getMethodHandlers(methods)
+
+}
+
+function getMethodHandlers(methods) {
+
     const supportsAllMethods = methods.includes("*")
+
+    return {
+        isForMethod: (action) => supportsAllMethods
+            ? true
+            : methods.includes(action.toLowerCase()),
+        supportsAllMethods: () => supportsAllMethods
+    }
+}
+
+function getSchemaAssert(assertData) {
 
     return {
         assert: data => {
@@ -92,15 +118,11 @@ function getSchemaAssert(assertData) {
                 throw new Error(result.errors.map(e => `${e.property} - ${e.message}`).join(", \r\n"))
             }
         },
-        isForMethod: (action) => supportsAllMethods
-            ? true
-            : methods.includes(action.toLowerCase()),
-        supportsAllMethods: () => supportsAllMethods
     }
 }
-function validateNethods(methods) {
-    if (isNullOrWhiteSpace(methods))
-        return false
+
+
+function validateMethods(methods) {
 
     return methods.includes("*")
         || methods.includes(HttpMethods.Get)
@@ -114,6 +136,7 @@ function validateNethods(methods) {
 export function getConfigurationData() {
     return JSON.parse(readFileSync('src/resources/configurations.json').toString())
 }
+
 function getNewNumericId(items, identifierField) {
     if (isNullOrEmpty(items)) {
         return 1

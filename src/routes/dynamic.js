@@ -1,4 +1,5 @@
 import { HttpErrorCodes } from '../lib/http-utils';
+import { HttpMethods } from '../resources';
 
 var express = require('express');
 
@@ -36,7 +37,7 @@ export function getRoute(config, adapter) {
             res.status(400).send("missing item to update")
             return
         }
-        if (!assertRequest(config, item, res)) {
+        if (!assertRequest(config, item, res, HttpMethods.Post)) {
             return
         }
 
@@ -60,7 +61,7 @@ export function getRoute(config, adapter) {
                 return
             }
 
-            if (!assertRequest(config, item, res)) {
+            if (!assertRequest(config, item, res,HttpMethods.Put)) {
                 return
             }
 
@@ -90,9 +91,9 @@ export function getRoute(config, adapter) {
     return router
 }
 
-function assertRequest(config, data, res) {
+function assertRequest(config, data, res, method) {
     try {
-        config.assert(data)
+        config.assert(method, data)
         return true
     }
     catch (error) {

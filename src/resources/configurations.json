@@ -10,7 +10,7 @@
 					"post",
 					"put"
 				],
-				"schemna": {
+				"schema": {
 					"type": "object",
 					"properties": {
 						"currency": {

@@ -1,18 +1,15 @@
 import { readFileSync, writeFileSync } from 'fs'
-import { isNullOrEmpty } from './lib/collections-utils';
+import { isNullOrEmpty } from './collections-utils';
 import { v4 } from 'uuid'
 import { Validator } from 'jsonschema'
-import { isNullOrWhiteSpace, stringContains } from './lib/string-utils';
+
 const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid" }
 const AssertTypes = { Schema: "schema", Field: "field" }
 
 export const HttpMethods = { Get: "get", Put: "put", Post: "post", Delete: "delete", Patch: "patch" }
 export function getConfigurations() {
-
     const fileData = getConfigurationData()
-    console.log(`config: ${JSON.stringify(fileData, null, '\t')}`)
     return fileData.map(item => getConfiguration(item))
-
 }
 
 
@@ -27,36 +24,43 @@ export function setConfiguration({ resourceName, identifier, idGenType }) {
     else {
         configurationData.push({ resourceName, identifier, idGenType })
     }
+
     writeConfigurationData(configurationData)
 }
 
 export function getConfiguration({ resourceName, identifier, idGenType, asserts }) {
-    const generator = idGenType == IDGeneratorTypes.Numeric
-        ? getNewNumericId
-        : getUUIDId
-
-    const asserters = getAsserts(asserts)
-
     return {
         resourceName,
         identifier,
-        generateId: (items, idField) =>
-            idGenType == IDGeneratorTypes.Numeric
-                ? getNewNumericId(items, idField)
-                : getUUIDId(items, idField)
-        ,
-        assert: (method, data) => asserters.forEach(asserter => {
-            if (asserter.isForMethod(method)) {
-                asserter.assert(data)
-            }
-        })
+        generateId: getIDGenerator(idGenType),
+        assert: getAsserter(asserts)
     }
+}
+
+function getAsserter(asserts) {
+    const asserters = getAsserts(asserts)
+    const asserter = (method, data) => asserters.forEach(asserter => {
+        if (asserter.isForMethod(method)) {
+            asserter.assert(data)
+        }
+    })
+    return asserter
+}
+
+function getIDGenerator(idGenType) {
+    const generator = (items, idField) =>
+        idGenType == IDGeneratorTypes.Numeric
+            ? getNewNumericId(items, idField)
+            : getUUIDId(items, idField)
+
+    return generator
 }
 
 function getAsserts(assertsData) {
     if (isNullOrEmpty(assertsData)) {
         return null
     }
+
     let asserts = []
     let idx
     for (idx in assertsData) {
@@ -77,6 +81,7 @@ function getAsserts(assertsData) {
 
         asserts.push(assert)
     }
+
     return asserts
 }
 
@@ -92,8 +97,8 @@ function handleMethodHandlers(assertData) {
         const message = "validation failed for methods property"
         throw new Error(message)
     }
-    return getMethodHandlers(methods)
 
+    return getMethodHandlers(methods)
 }
 
 function getMethodHandlers(methods) {
@@ -133,6 +138,7 @@ function validateMethods(methods) {
 
 
 }
+
 export function getConfigurationData() {
     return JSON.parse(readFileSync('src/resources/configurations.json').toString())
 }
@@ -141,14 +147,16 @@ function getNewNumericId(items, identifierField) {
     if (isNullOrEmpty(items)) {
         return 1
     }
+
     const max = items.reduce(function (prev, current) {
         return (prev[identifierField] > current[identifierField]) ? prev : current
     })[identifierField] + 1
+
     return max
 }
-function getUUIDId(items, identifierField) {
-    return v4()
 
+function getUUIDId() {
+    return v4()
 }
 
 function writeConfigurationData(configurationData) {

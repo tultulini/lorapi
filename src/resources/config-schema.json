@@ -1,0 +1,40 @@
+{
+    "type": "object",
+    "properties": {
+        "resourceName": {
+            "type": "string"
+        },
+        "identifier": {
+            "type": "string"
+        },
+        "idGenType": {
+            "type": "string",
+            "enum": [
+                "uuid",
+                "numeric"
+            ]
+        },
+        "asserts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "schema"
+                        ]
+                    },
+                    "schema": {
+                        "type": "object"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "resourceName",
+        "identifier",
+        "idGenType"
+    ]
+}

@@ -3,7 +3,7 @@ import { isNullOrEmpty } from './collections-utils';
 import { v4 } from 'uuid'
 import { Validator } from 'jsonschema'
 
-const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid" }
+const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid", DateTime: "datetime" }
 const AssertTypes = { Schema: "schema", Field: "field" }
 
 export const HttpMethods = { Get: "get", Put: "put", Post: "post", Delete: "delete", Patch: "patch" }
@@ -38,6 +38,10 @@ export function getConfiguration({ resourceName, identifier, idGenType, asserts 
 }
 
 function getAsserter(asserts) {
+    if (!asserters) {
+        return null
+    }
+
     const asserters = getAsserts(asserts)
     const asserter = (method, data) => asserters.forEach(asserter => {
         if (asserter.isForMethod(method)) {
@@ -48,12 +52,25 @@ function getAsserter(asserts) {
 }
 
 function getIDGenerator(idGenType) {
-    const generator = (items, idField) =>
-        idGenType == IDGeneratorTypes.Numeric
-            ? getNewNumericId(items, idField)
-            : getUUIDId(items, idField)
+    const generator = (items, idField) => {
+        switch (idGenType) {
+            case IDGeneratorTypes.Numeric:
+                return getNewNumericId(items, idField)
+            case IDGeneratorTypes.UUID:
+                return getUUIDId(items, idField)
+            case IDGeneratorTypes.DateTime:
+                return getDateTimeId()
+            default:
+                throw new Error(`${idGenType} is not a support generator type`);
+        }
+    }
 
     return generator
+}
+
+function getDateTimeId() {
+    return (new Date()).toISOString()
+
 }
 
 function getAsserts(assertsData) {

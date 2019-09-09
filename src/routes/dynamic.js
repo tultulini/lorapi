@@ -55,7 +55,7 @@ export function getRoute(config, adapter) {
                 return
             }
 
-            if (!assertRequest(config, item, res,HttpMethods.Put)) {
+            if (!assertRequest(config, item, res, HttpMethods.Put)) {
                 return
             }
 
@@ -86,7 +86,10 @@ export function getRoute(config, adapter) {
 
 function assertRequest(config, data, res, method) {
     try {
-        config.assert(method, data)
+        if (config.assert) {
+            config.assert(method, data)
+        }
+
         return true
     }
     catch (error) {

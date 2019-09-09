@@ -1,3 +1,36 @@
 [
-
+	{
+		"resourceName": "currency",
+		"identifier": "id",
+		"idGenType": "uuid",
+		"asserts": [
+			{
+				"type": "schema",
+				"methods": [
+					"post",
+					"put"
+				],
+				"schema": {
+					"type": "object",
+					"properties": {
+						"currency": {
+							"type": "string"
+						},
+						"amount": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"currency",
+						"amount"
+					]
+				}
+			}
+		]
+	},
+	{
+		"resourceName": "construction-schematics",
+		"identifier": "id",
+		"idGenType": "datetime"
+	}
 ]

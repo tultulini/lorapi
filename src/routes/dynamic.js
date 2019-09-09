@@ -1,5 +1,6 @@
 import { HttpErrorCodes } from '../lib/http-utils';
 import { HttpMethods } from '../lib/configuration';
+import { getQueryStringObject } from '../lib/url-utils';
 
 const express = require('express');
 
@@ -11,7 +12,24 @@ export function getRoute(config, adapter) {
 
     /* GET home page. */
     router.get('/', function (req, res) {
-        let items = adapter.getAll(config)
+
+        const queryString = getQueryStringObject(req.originalUrl)
+        const allItems = adapter.getAll(config)
+        const fields = queryString.fields ? queryString.fields.split(",").map(f => f.trim()) : undefined
+        const items = fields
+            ? allItems.map(item => {
+                let partialItem = {}
+                for (let field of fields) {
+                    console.log(`field:${field}`)
+                    if (item[field] !== undefined) {
+                        partialItem[field] = item.field
+                    }
+                }
+
+                return partialItem
+            })
+            : allItems
+
         res.send(items)
     });
 

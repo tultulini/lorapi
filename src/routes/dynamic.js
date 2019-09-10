@@ -20,9 +20,8 @@ export function getRoute(config, adapter) {
             ? allItems.map(item => {
                 let partialItem = {}
                 for (let field of fields) {
-                    console.log(`field:${field}`)
                     if (item[field] !== undefined) {
-                        partialItem[field] = item.field
+                        partialItem[field] = item[field]
                     }
                 }
 

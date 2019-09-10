@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { isNullOrEmpty } from './collections-utils';
 import { v4 } from 'uuid'
 import { Validator } from 'jsonschema'
+import { getCurrentUTCISOTIme } from './date-utils';
 
 const IDGeneratorTypes = { Numeric: "numeric", UUID: "uuid", DateTime: "datetime" }
 const AssertTypes = { Schema: "schema", Field: "field" }
@@ -69,7 +70,7 @@ function getIDGenerator(idGenType) {
 }
 
 function getDateTimeId() {
-    return (new Date()).toISOString()
+    return getCurrentUTCISOTIme()
 
 }
 
